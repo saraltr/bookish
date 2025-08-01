@@ -2,28 +2,56 @@ import placeholderImage from "@/assets/images/placeholder.png";
 import { Book, searchBooks } from "@/utils/openLibrary";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { Link } from "expo-router";
+import React, { useCallback, useState } from "react";
 import {
   FlatList,
   Image,
+  Keyboard,
+  Pressable,
   StyleSheet,
   Text,
   TextInput,
-  TouchableOpacity,
-  View,
+  View
 } from "react-native";
 
 export default function BookSearch() {
+  // state for the search query input
   const [query, setQuery] = useState("");
+  // state for storing books from search results
   const [books, setBooks] = useState<Book[]>([]);
+  // loading indicator while fetching
   const [loading, setLoading] = useState(false);
+  // check if user has performed at least one search
+  const [hasSearched, setHasSearched] = useState(false);
+
+    useFocusEffect(
+    useCallback(() => {
+      return () => {
+        // reset state when screen loses focus
+        setQuery("");
+        setBooks([]);
+        setHasSearched(false);
+        setLoading(false);
+      };
+    }, [])
+  );
 
   const handleSearch = async () => {
+    // do nothing if query is empty or just spaces
     if (!query.trim()) return;
-
+    // dismiss the keyboard when search starts
+    Keyboard.dismiss();
+    // set loading state to true
     setLoading(true);
+    // mark that a search has happened
+    setHasSearched(true);
+    // fetch books from API using the search query
     const results = await searchBooks(query);
+    // update the books state with results
     setBooks(results);
+    // turn off loading indicator
     setLoading(false);
   };
 
@@ -41,15 +69,24 @@ export default function BookSearch() {
           placeholderTextColor="#999"
           value={query}
           onChangeText={setQuery}
+          // show search on keyboard return key
+          returnKeyType="search"
+          // trigger search on enter key press
+          onSubmitEditing={handleSearch}
         />
-        <TouchableOpacity style={styles.button} onPress={handleSearch}>
+        <Pressable style={styles.button} onPress={handleSearch}>
           <Text style={styles.buttonText}>Search</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
 
       {loading ? (
+        // show loading text when fetching
         <Text style={styles.loading}>Loading...</Text>
-      ) : (
+
+        ) : hasSearched && books.length === 0 ? (
+          // show no results message if search done but no books found
+          <Text style={styles.loading}>No books found for “{query}”.</Text>
+        ) : (
         <FlatList
           data={books}
           keyExtractor={(item) => item.key}
@@ -62,8 +99,16 @@ export default function BookSearch() {
             return (
               <View style={styles.bookItem}>
                 <Image source={imageSource} style={styles.image} />
+                
                 <View style={styles.bookInfo}>
+                  <Link href={
+                    {
+                      pathname:"/book/[id]",
+                      params: {id: item.key}
+                    }
+                  }>
                   <Text style={styles.title}>{item.title}</Text>
+                  </Link>
                   {item.author_name && (
                     <Text style={styles.author}>
                       {item.author_name.join(", ")}

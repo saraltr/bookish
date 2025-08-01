@@ -8,6 +8,17 @@ export interface Book {
   first_publish_year?: number;
 }
 
+export interface BookDetails {
+  title: string;
+  description?: string | { value: string };
+  covers?: number[];
+  subject_places?: string[];
+  subject_times?: string[];
+  subjects?: string[];
+  links?: { title: string; url: string }[];
+}
+
+
 export async function searchBooks(query: string): Promise<Book[]> {
   try {
     const encodedQuery = encodeURIComponent(query);
@@ -25,3 +36,15 @@ export async function searchBooks(query: string): Promise<Book[]> {
     return [];
   }
 }
+
+export async function getBook(id: string): Promise<BookDetails | null> {
+  try {
+    const cleanId = id.replace("/works/", "");
+    const response = await axios.get(`https://openlibrary.org/works/${cleanId}.json`);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching book details:", error);
+    return null;
+  }
+}
+
