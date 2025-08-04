@@ -63,6 +63,29 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons name={focused ? "person-circle-outline" : "person-circle-outline"} color={color} size={24} />
+          ),
+        }}
+      />
+      <Tabs.Screen 
+        name="register"
+        options={{
+          title: "Register",
+          href:null
+        }}
+      ></Tabs.Screen>
+      <Tabs.Screen 
+        name="login"
+        options={{
+          title: "Login",
+          href:null
+        }}
+      ></Tabs.Screen>
     </Tabs>
   );
 }
