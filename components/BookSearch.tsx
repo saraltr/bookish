@@ -1,10 +1,8 @@
-import placeholderImage from "@/assets/images/placeholder.png";
 import { Book, searchBooks } from "@/utils/openLibrary";
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome5 from "@expo/vector-icons/FontAwesome5";
-import { useFocusEffect } from "@react-navigation/native";
 import { Link } from "expo-router";
-import React, { useCallback, useState } from "react";
+import React, { useState } from "react";
 import {
   FlatList,
   Image,
@@ -26,17 +24,6 @@ export default function BookSearch() {
   // check if user has performed at least one search
   const [hasSearched, setHasSearched] = useState(false);
 
-    useFocusEffect(
-    useCallback(() => {
-      return () => {
-        // reset state when screen loses focus
-        setQuery("");
-        setBooks([]);
-        setHasSearched(false);
-        setLoading(false);
-      };
-    }, [])
-  );
 
   const handleSearch = async () => {
     // do nothing if query is empty or just spaces
@@ -58,7 +45,7 @@ export default function BookSearch() {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <FontAwesome5 name="book" size={26} color="#8e94f2" />
+        <FontAwesome5 name="book" size={26} color="#6a6af3" />
         <Text style={styles.headerText}>Search Books</Text>
       </View>
 
@@ -93,9 +80,8 @@ export default function BookSearch() {
           contentContainerStyle={{ paddingBottom: 20 }}
           renderItem={({ item }) => {
             const imageSource = item.cover_i
-              ? { uri: `https://covers.openlibrary.org/b/id/${item.cover_i}-M.jpg` }
-              : placeholderImage;
-
+            ? { uri: `https://covers.openlibrary.org/b/id/${item.cover_i}-M.jpg` }
+            : require("@/assets/images/placeholder.png");
             return (
               <View style={styles.bookItem}>
                 <Image source={imageSource} style={styles.image} />
@@ -139,12 +125,12 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#8e94f2",
+    color: "#6a6af3",
     marginLeft: 8,
   },
   container: {
     paddingHorizontal: 16,
-    paddingTop: 50,
+    paddingTop: 20,
     backgroundColor: "#f9f9f9",
     flex: 1,
   },
@@ -163,7 +149,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   button: {
-    backgroundColor: "#8e94f2",
+    backgroundColor: "#6a6af3",
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,

@@ -12,8 +12,6 @@ import {
   View,
 } from "react-native";
 
-// ...imports...
-
 export default function BookDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
@@ -54,9 +52,10 @@ export default function BookDetailsScreen() {
   }
 
   const coverId = book.covers?.[0];
-  const imageUrl = coverId
-    ? `https://covers.openlibrary.org/b/id/${coverId}-L.jpg`
-    : null;
+  const imageSource = coverId
+  ? { uri: `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` }
+  : require("@/assets/images/placeholder.png");
+
 
   const subjects = book.subjects ?? [];
   const subjectPlaces = book.subject_places ?? [];
@@ -65,14 +64,11 @@ export default function BookDetailsScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      {imageUrl && (
         <Image
-          source={{ uri: imageUrl }}
+          source={imageSource}
           style={styles.coverImage}
           resizeMode="contain"
         />
-      )}
-
       <Text style={styles.title}>{book.title}</Text>
 
       {book.description && (
@@ -149,7 +145,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     textAlign: "center",
     marginBottom: 16,
-    color: "#222",
+    color: "#1e1e2e",
   },
   description: {
     fontSize: 16,
