@@ -1,3 +1,4 @@
+import ToReadList from "@/components/ToReadList";
 import { useAuth } from "@/contexts/authContext";
 import { auth } from "@/utils/firebaseConfig";
 import { useRouter } from "expo-router";
@@ -8,6 +9,7 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -32,8 +34,10 @@ export default function ProfileScreen() {
     <View>
      <Text>Welcome, {user?.email}</Text>
      <TouchableOpacity onPress={handleLogout} style={styles.button}>
-      Log Out
+      <Text>Log Out</Text>
      </TouchableOpacity>
+     
+     <ToReadList></ToReadList>
     </View>
   );
 }
@@ -47,5 +51,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginTop: 8,
     alignSelf: "center", 
-  },
+  }
 });
