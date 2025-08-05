@@ -1,9 +1,7 @@
 import { useAuth } from "@/contexts/authContext";
 import { db } from "@/utils/firebaseConfig";
-import { addToReadingList } from "@/utils/readList";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { Link } from "expo-router";
-
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
@@ -24,7 +22,7 @@ type ReadBook = {
 };
 
 
-export default function ToReadList() {
+export default function CurrentlyReading() {
   const { user, loading } = useAuth();
 
   const [readList, setReadList] = useState<ReadBook[]>([]);
@@ -35,7 +33,7 @@ export default function ToReadList() {
       if (!user) return;
       try {
         const snapshot = await getDocs(
-          collection(db, "users", user.uid, "readBooks")
+          collection(db, "users", user.uid, "currentBooks")
         );
         const books = snapshot.docs.map((doc) => ({
           key: doc.id,
@@ -65,26 +63,13 @@ export default function ToReadList() {
 
         try {
             const cleanId = bookId.replace("/works/", "");
-            await deleteDoc(doc(db, "users", user.uid, "readBooks", cleanId));
+            await deleteDoc(doc(db, "users", user.uid, "currentBooks", cleanId));
             // update local state to remove the deleted book
             setReadList((prev) => prev.filter((book) => book.key !== cleanId));
         } catch (error) {
             console.error("Failed to remove book:", error);
         }
     };
-
-    const handleMoveToReading = async (book: ReadBook) => {
-      if (!user) return;
-
-      try {
-        await addToReadingList(book);
-        await deleteDoc(doc(db, "users", user.uid, "readBooks", book.key.replace("/works/", "")));
-        setReadList((prev) => prev.filter((b) => b.key !== book.key));
-      } catch (error) {
-        console.error("Failed to move book to currently reading:", error);
-      }
-    };
-
 
 
     if (loading) return <Text>Loading...</Text>;
@@ -93,7 +78,7 @@ export default function ToReadList() {
   return (
 
       <View style={styles.container}>
-        <Text style={styles.headerText}>To Read List:</Text>
+        <Text style={styles.headerText}>Currently Reading:</Text>
         {readLoading ? (
           <Text>Loading your books...</Text>
         ) : readList.length === 0 ? (
@@ -108,7 +93,6 @@ export default function ToReadList() {
             renderItem={({ item }) => (
                 
                 <View style={styles.bookContainer}>
-                    {/* add to read list */}
                     <View style={styles.removeButtonWrapper}>
                         <Ionicons
                         name="trash"
@@ -117,16 +101,6 @@ export default function ToReadList() {
                         onPress={() => handleRemoveBook(item.key)}
                         />
                     </View>
-                    {/* add book to currently reading list */}
-                    <View style={styles.moveButtonWrapper}>
-                      <Ionicons
-                        name="book"
-                        size={20}
-                        color="#fff"
-                        onPress={() => handleMoveToReading(item)}
-                      />
-                    </View>
-
                     <Link 
                   href={
                     {
@@ -236,13 +210,4 @@ const styles = StyleSheet.create({
         padding: 4,
         zIndex: 2,
     },
-    moveButtonWrapper: {
-      position: "absolute",
-      top: 6,
-      left: 6,
-      backgroundColor: "#4a90e2",
-      borderRadius: 16,
-      padding: 4,
-      zIndex: 2,
-    }
 });

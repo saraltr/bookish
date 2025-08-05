@@ -1,6 +1,8 @@
+import { auth, db } from "@/utils/firebaseConfig";
 import { BookDetails, getBook } from "@/utils/openLibrary";
-import { addToReadList } from "@/utils/readList";
+import { addToReadList, addToReadingList } from "@/utils/readList";
 import { useLocalSearchParams, useNavigation } from "expo-router";
+import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ActivityIndicator,
@@ -13,6 +15,7 @@ import {
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+
 
 
 export default function BookDetailsScreen() {
@@ -142,18 +145,42 @@ export default function BookDetailsScreen() {
       )}
 
 
-      <TouchableOpacity
-        style={styles.fab}
-        onPress={() => {
-          if (book) {
-            addToReadList(book)
-              .then(() => alert("Book added to your read list!"))
-              .catch((err) => alert("Failed to add book: " + err.message));
-          }
-        } }
-      >
-        <Text style={styles.fabText}>+ Add to Read List</Text>
-      </TouchableOpacity>
+      <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#1e88e5" }]}
+          onPress={() => {
+            if (book) {
+              addToReadList(book)
+                .then(() => alert("Book added to your read list!"))
+                .catch((err) => alert("Failed to add book: " + err.message));
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>+ To Read List</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#43a047" }]}
+          onPress={async () => {
+            if (!book) return;
+
+            try {
+              await addToReadingList(book);
+              // remove from to-read list if present
+              const cleanKey = book.key.replace("/works/", "");
+              await deleteDoc(doc(db, "users", auth.currentUser?.uid!, "readBooks", cleanKey));
+
+              alert("Book moved to Currently Reading list!");
+            } catch (err: any) {
+              alert("Failed to move book: " + err.message);
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>+ Currently Reading</Text>
+        </TouchableOpacity>
+
+      </View>
+
 
     </ScrollView>
     </SafeAreaView>
@@ -276,6 +303,33 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
+  },
+  buttonRow: {
+  flexDirection: "row",
+  justifyContent: "space-between",
+  gap: 12,
+  marginTop: 24,
+  marginBottom: 40,
+  width: "100%",
+},
+
+actionButton: {
+  flex: 1,
+  paddingVertical: 14,
+  borderRadius: 30,
+  alignItems: "center",
+  shadowColor: "#000",
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.1,
+  shadowRadius: 4,
+  elevation: 3,
+},
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
   }
+
 });
 

@@ -20,6 +20,7 @@ export interface BookDetails {
   subjects?: string[];
   links?: { title: string; url: string }[];
   authors?: { name: string; key: string }[];
+  cover_i?: number[];
 }
 
 

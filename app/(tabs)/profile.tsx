@@ -1,9 +1,11 @@
+import CurrentlyReading from "@/components/CurrentlyReading";
 import ToReadList from "@/components/ToReadList";
 import { useAuth } from "@/contexts/authContext";
 import { auth } from "@/utils/firebaseConfig";
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
 import {
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -31,14 +33,17 @@ export default function ProfileScreen() {
     };
 
   return (
-    <View>
-     <Text>Welcome, {user?.email}</Text>
-     <TouchableOpacity onPress={handleLogout} style={styles.button}>
-      <Text>Log Out</Text>
-     </TouchableOpacity>
-     
-     <ToReadList></ToReadList>
-    </View>
+    <ScrollView>
+      <View>
+      <Text>Welcome, {user?.email}</Text>
+      <TouchableOpacity onPress={handleLogout} style={styles.button}>
+        <Text>Log Out</Text>
+      </TouchableOpacity>
+      
+      <ToReadList></ToReadList>
+      <CurrentlyReading></CurrentlyReading>
+      </View>
+    </ScrollView>
   );
 }
 
