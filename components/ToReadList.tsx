@@ -1,15 +1,16 @@
 import { useAuth } from "@/contexts/authContext";
 import { db } from "@/utils/firebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Link } from "expo-router";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    StyleSheet,
-    Text,
-    View,
-    Platform
+  FlatList,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
 
 
@@ -100,6 +101,15 @@ export default function ToReadList() {
                         onPress={() => handleRemoveBook(item.key)}
                         />
                     </View>
+                    <Link 
+                  href={
+                    {
+                      pathname:"/book/[id]",
+                      params: {id: item.key}
+                    }
+                  }
+                  
+                  >
                     <Image
                         style={styles.image}
                         source={
@@ -116,6 +126,7 @@ export default function ToReadList() {
                     <Text style={styles.author} numberOfLines={1}>
                         {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
                     </Text>
+                    </Link>
                 </View>
             )}
         />

@@ -13,7 +13,18 @@ export default function RootLayout() {
         <Stack.Screen 
         name="register" options={{ title: "Register"}} />
         <Stack.Screen
-        name="book/[id]"/>
+          name="book/[id]"
+          options={{
+            headerStyle: {
+              backgroundColor: "#1e1e2e",
+            },
+            // color of back arrow and title text
+            headerTintColor: "#fff",
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+          }}
+        />
       </Stack>
     </AuthProvider>
   );

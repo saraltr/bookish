@@ -1,4 +1,5 @@
 import { BookDetails, getBook } from "@/utils/openLibrary";
+import { addToReadList } from "@/utils/readList";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
@@ -11,7 +12,8 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { addToReadList } from "@/utils/readList"
+import { SafeAreaView } from "react-native-safe-area-context";
+
 
 export default function BookDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -65,82 +67,97 @@ export default function BookDetailsScreen() {
   const authors = book.authors ?? [];
 
   return (
-    <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-        <Image
-          source={imageSource}
-          style={styles.coverImage}
-          resizeMode="contain"
-        />
+    <>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
+      
+      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
+      <Image
+        source={imageSource}
+        style={styles.coverImage}
+        resizeMode="contain" />
       <Text style={styles.title}>{book.title}</Text>
+
       {authors.length > 0 && (
-        <Text style={styles.section}>
-          <Text style={styles.bold}>Author{authors.length > 1 ? "s" : ""}: </Text>
-          {authors.map((author, index) => (
-            <Text key={index}>
-              {author.name}
-              {index < authors.length - 1 ? ", " : ""}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Author{authors.length > 1 ? "s" : ""}</Text>
+            <Text style={styles.sectionText}>
+              {authors.map((author, index) => (
+                <Text key={index}>
+                  {author.name}
+                  {index < authors.length - 1 ? ", " : ""}
+                </Text>
+              ))}
             </Text>
-          ))}
-        </Text>
-      )}
+          </View>
+        )}
 
 
       {book.description && (
-        <Text style={styles.description}>
-          {typeof book.description === "string"
-            ? book.description
-            : book.description?.value}
-        </Text>
-      )}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Description</Text>
+            <Text style={styles.description}>
+              {typeof book.description === "string"
+                ? book.description
+                : book.description?.value}
+            </Text>
+          </View>
+        )}
 
       {subjectPlaces.length > 0 && (
-        <Text style={styles.section}>
-          <Text style={styles.bold}>Places: </Text>
-          {subjectPlaces.join(", ")}
-        </Text>
-      )}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Places</Text>
+            <Text style={styles.sectionText}>{subjectPlaces.join(", ")}</Text>
+          </View>
+        )}
 
       {subjectTimes.length > 0 && (
-        <Text style={styles.section}>
-          <Text style={styles.bold}>Time Periods: </Text>
-          {subjectTimes.join(", ")}
-        </Text>
-      )}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Time Periods</Text>
+            <Text style={styles.sectionText}>{subjectTimes.join(", ")}</Text>
+          </View>
+        )}
 
       {subjects.length > 0 && (
-        <View style={styles.tagsContainer}>
-          {subjects.slice(0, 20).map((subject, index) => (
-            <Text key={index} style={styles.tag}>
-              {subject}
-            </Text>
-          ))}
-        </View>
-      )}
+          <View style={styles.card}>
+            <Text style={styles.cardTitle}>Subjects</Text>
+            <View style={styles.tagsContainer}>
+              {subjects.slice(0, 20).map((subject, index) => (
+                <Text key={index} style={styles.tag}>
+                  {subject}
+                </Text>
+              ))}
+            </View>
+          </View>
+        )}
 
       {links.length > 0 && (
-        <View style={styles.linksContainer}>
-          <Text style={styles.bold}>More Links:</Text>
-          {links.map((link, index) => (
-            <TouchableOpacity key={index} onPress={() => Linking.openURL(link.url)}>
-              <Text style={styles.link}>{link.title}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        <View style={styles.card}>
+            <Text style={styles.cardTitle}>More Links</Text>
+            {links.map((link, index) => (
+              <TouchableOpacity key={index} onPress={() => Linking.openURL(link.url)}>
+                <Text style={styles.link}>{link.title}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
       )}
 
 
       <TouchableOpacity
+        style={styles.fab}
         onPress={() => {
           if (book) {
             addToReadList(book)
-            .then(() => alert("Book added to your read list!"))
-          .catch((err) => alert("Failed to add book: " + err.message));
+              .then(() => alert("Book added to your read list!"))
+              .catch((err) => alert("Failed to add book: " + err.message));
           }
-        }}
-        >
-          <Text>Add to Read List</Text>
+        } }
+      >
+        <Text style={styles.fabText}>+ Add to Read List</Text>
       </TouchableOpacity>
+
     </ScrollView>
+    </SafeAreaView>
+    </>
   );
 }
 
@@ -152,9 +169,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   container: {
-    padding: 24,
+    padding: 20,
     alignItems: "center",
-    backgroundColor: "#fdfdfd",
+    backgroundColor: "#f5f5f5",
+    paddingBottom: 100,
   },
   coverImage: {
     width: 220,
@@ -176,11 +194,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16,
-    lineHeight: 24,
-    textAlign: "left",
     color: "#444",
-    marginBottom: 16,
-    width: "100%",
+    lineHeight: 24,
   },
   section: {
     fontSize: 16,
@@ -220,5 +235,47 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginVertical: 6,
   },
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    marginTop: 16,
+    width: "100%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  cardTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#222",
+    marginBottom: 8,
+  },
+  sectionText: {
+    fontSize: 16,
+    color: "#444",
+    lineHeight: 22,
+  },
+  fab: {
+    position: "absolute",
+    bottom: 20,
+    right: 20,
+    backgroundColor: "#1e88e5",
+    paddingHorizontal: 20,
+    paddingVertical: 14,
+    borderRadius: 30,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  fabText: {
+    color: "#fff",
+    fontWeight: "600",
+    fontSize: 16,
+  }
 });
 
