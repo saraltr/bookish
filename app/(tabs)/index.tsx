@@ -2,6 +2,7 @@ import Bestsellers from "@/components/BestSellers";
 import { Image } from "expo-image";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
+import SubjectsLists from "@/components/SubjectsLists";
 
 export default function HomeScreen() {
   
@@ -17,6 +18,8 @@ export default function HomeScreen() {
         <Text style={styles.heroTitle}>Welcome to Bookish</Text>
         <Text style={styles.heroSubtitle}>subtitle</Text>
       </View>
+
+      <SubjectsLists></SubjectsLists>
     
       <Bestsellers></Bestsellers>
 

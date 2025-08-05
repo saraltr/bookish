@@ -82,3 +82,19 @@ export async function getBook(id: string): Promise<BookDetails | null> {
     return null;
   }
 }
+
+export async function getBooksBySubject(subject: string): Promise<Book[]> {
+  try {
+    const res = await axios.get(`https://openlibrary.org/subjects/${subject}.json?limit=20`);
+    return res.data.works.map((book: any) => ({
+      key: book.key,
+      title: book.title,
+      author_name: book.authors?.map((a: any) => a.name),
+      cover_i: book.cover_id,
+      first_publish_year: book.first_publish_year,
+    }));
+  } catch (error) {
+    console.error("Error fetching subject books:", error);
+    return [];
+  }
+}
