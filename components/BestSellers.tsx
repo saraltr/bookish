@@ -4,6 +4,7 @@ import {
   ActivityIndicator,
   FlatList,
   Image,
+  Platform,
   StyleSheet,
   Text,
   View
@@ -95,11 +96,22 @@ const styles = StyleSheet.create({
     width: 140,
     marginRight: 16,
     borderRadius: 10,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    shadowOffset: { width: 0, height: 3 },
+    backgroundColor: "#fff",
+    ...Platform.select({
+      ios: {
+        shadowColor: "#000",
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 2 },
+      },
+      android: {
+        elevation: 2,
+      },
+      default: {
+        // web
+        boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
+      },
+    }),
     padding: 10,
   },
   image: {
