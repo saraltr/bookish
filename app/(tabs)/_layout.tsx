@@ -38,13 +38,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen 
-        name="book/[id]"
-        options={{
-          href:null
-        }}
-      >
-      </Tabs.Screen>
       <Tabs.Screen
         name="clubs"
         options={{
@@ -72,20 +65,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen 
-        name="register"
-        options={{
-          title: "Register",
-          href:null
-        }}
-      ></Tabs.Screen>
-      <Tabs.Screen 
-        name="login"
-        options={{
-          title: "Login",
-          href:null
-        }}
-      ></Tabs.Screen>
     </Tabs>
   );
 }

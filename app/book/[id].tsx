@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import { addToReadList } from "@/utils/readList"
 
 export default function BookDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -61,6 +62,7 @@ export default function BookDetailsScreen() {
   const subjectPlaces = book.subject_places ?? [];
   const subjectTimes = book.subject_times ?? [];
   const links = book.links ?? [];
+  const authors = book.authors ?? [];
 
   return (
     <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
@@ -70,6 +72,18 @@ export default function BookDetailsScreen() {
           resizeMode="contain"
         />
       <Text style={styles.title}>{book.title}</Text>
+      {authors.length > 0 && (
+        <Text style={styles.section}>
+          <Text style={styles.bold}>Author{authors.length > 1 ? "s" : ""}: </Text>
+          {authors.map((author, index) => (
+            <Text key={index}>
+              {author.name}
+              {index < authors.length - 1 ? ", " : ""}
+            </Text>
+          ))}
+        </Text>
+      )}
+
 
       {book.description && (
         <Text style={styles.description}>
@@ -113,6 +127,19 @@ export default function BookDetailsScreen() {
           ))}
         </View>
       )}
+
+
+      <TouchableOpacity
+        onPress={() => {
+          if (book) {
+            addToReadList(book)
+            .then(() => alert("Book added to your read list!"))
+          .catch((err) => alert("Failed to add book: " + err.message));
+          }
+        }}
+        >
+          <Text>Add to Read List</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }
