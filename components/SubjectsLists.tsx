@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import {
   FlatList,
   Image,
+  Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
-  Pressable,
 } from "react-native";
 
-const SUBJECTS = ["science_fiction", "fantasy", "romance", "mystery", "history"];
+const SUBJECTS = ["science_fiction", "fantasy", "romance", "mystery", "young_adult", "horror", "thriller", "history", "plays", "short_stories"];
 
 export default function SubjectsLists() {
   const [selectedSubject, setSelectedSubject] = useState<string>(SUBJECTS[0]);
@@ -87,7 +87,7 @@ export default function SubjectsLists() {
       </ScrollView>
 
       <Text style={styles.sectionTitle}>
-        {selectedSubject.replace("_", " ").toUpperCase()}
+        {selectedSubject.replace("_", " ")}
       </Text>
 
       {loading ? (
@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   activeFilterButton: {
-    backgroundColor: "#4f46e5",
+    backgroundColor: "#85B79D",
   },
   filterText: {
     color: "#333",
@@ -139,7 +139,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 12,
     paddingHorizontal: 16,
-    color: "#1e1e2e",
+    color: "#2B0607",
+    textTransform: "capitalize"
   },
   listContent: {
     paddingLeft: 16,
@@ -160,7 +161,7 @@ const styles = StyleSheet.create({
   bookTitle: {
     fontWeight: "bold",
     fontSize: 14,
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   bookAuthor: {
     fontStyle: "italic",

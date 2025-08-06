@@ -1,8 +1,8 @@
 import Bestsellers from "@/components/BestSellers";
+import SubjectsLists from "@/components/SubjectsLists";
 import { Image } from "expo-image";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import SubjectsLists from "@/components/SubjectsLists";
 
 export default function HomeScreen() {
   
@@ -36,9 +36,9 @@ const styles = StyleSheet.create({
     paddingBottom: 20,
   },
   heroSection: {
-    backgroundColor: "#f0f4ff",
-    paddingTop: 60,
-    paddingBottom: 40,
+    backgroundColor: "#efefefc8",
+    paddingTop: 30,
+    paddingBottom: 30,
     paddingHorizontal: 20,
     alignItems: "center",
   },
@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
   heroTitle: {
     fontSize: 32,
     fontWeight: "800",
-    color: "#4b4be0",
+    color: "#85B79D",
     textAlign: "center",
   },
   heroSubtitle: {

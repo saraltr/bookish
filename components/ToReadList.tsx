@@ -7,12 +7,12 @@ import { Link } from "expo-router";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
-  FlatList,
-  Image,
-  Platform,
-  StyleSheet,
-  Text,
-  View
+    FlatList,
+    Image,
+    Platform,
+    StyleSheet,
+    Text,
+    View
 } from "react-native";
 
 
@@ -177,7 +177,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 12,
     paddingHorizontal: 16,
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   defaultText: {
     paddingHorizontal: 20,
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 14,
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   author: {
     fontStyle: "italic",

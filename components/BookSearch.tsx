@@ -45,7 +45,7 @@ export default function BookSearch() {
   return (
     <View style={styles.container}>
       <View style={styles.headerRow}>
-        <FontAwesome5 name="book" size={26} color="#6a6af3" />
+        <FontAwesome5 name="book" size={26} color="#85B79D" />
         <Text style={styles.headerText}>Search Books</Text>
       </View>
 
@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 24,
     fontWeight: "700",
-    color: "#6a6af3",
+    color: "#85B79D",
     marginLeft: 8,
   },
   container: {
@@ -149,7 +149,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   button: {
-    backgroundColor: "#6a6af3",
+    backgroundColor: "#85B79D",
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 8,
@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 16,
     fontWeight: "700",
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   author: {
     fontSize: 14,

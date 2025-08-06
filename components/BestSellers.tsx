@@ -49,7 +49,7 @@ export default function Bestsellers() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>The New York Times Best Sellers lists.</Text>
+      <Text style={styles.headerText}>The New York Times Best Sellers list</Text>
       <FlatList
         data={books}
         keyExtractor={(item) => item.primary_isbn13}
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     marginBottom: 12,
     paddingHorizontal: 16,
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   center: {
     flex: 1,
@@ -105,7 +105,7 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: "bold",
     fontSize: 14,
-    color: "#1e1e2e",
+    color: "#2B0607",
   },
   author: {
     fontStyle: "italic",

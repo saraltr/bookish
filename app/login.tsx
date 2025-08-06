@@ -69,7 +69,7 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#1e1e2e",
+    backgroundColor: "#2B0607",
     justifyContent: "center",
     paddingHorizontal: 24,
   },
@@ -77,19 +77,19 @@ const styles = StyleSheet.create({
     fontSize: 28,
     fontWeight: "bold",
     marginBottom: 24,
-    color: "#fefefe",
+    color: "#f0f4ff",
     textAlign: "center",
   },
   input: {
     backgroundColor: "#2a2a3c",
-    color: "#fefefe",
+    color: "#f0f4ff",
     padding: 14,
     borderRadius: 8,
     marginBottom: 16,
     fontSize: 16,
   },
   button: {
-    backgroundColor: "#7fc8f8",
+    backgroundColor: "#85B79D",
     paddingVertical: 14,
     paddingHorizontal: 30,
     borderRadius: 8,
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     alignSelf: "center", 
   },
   buttonText: {
-    color: "#1e1e2e",
+    color: "#2B0607",
     fontWeight: "bold",
     fontSize: 16
   },
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   link: {
-    color: "#7fc8f8",
+    color: "#85B79D",
     marginTop: 20,
     textAlign: "center",
     fontSize: 14,
