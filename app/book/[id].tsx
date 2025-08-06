@@ -9,13 +9,13 @@ import {
   ActivityIndicator,
   Image,
   Linking,
+  Platform,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 
 
@@ -72,9 +72,9 @@ export default function BookDetailsScreen() {
 
   return (
     <>
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}
+      contentContainerStyle={styles.scrollContainer}>
       <View style={styles.heroSection}>
         <Image source={imageSource} style={styles.coverImage} resizeMode="contain" />
         <Text style={styles.title}>{book.title}</Text>
@@ -181,7 +181,6 @@ export default function BookDetailsScreen() {
 
 
     </ScrollView>
-    </SafeAreaView>
     </>
   );
 }
@@ -192,6 +191,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#f5f5f5",
+  },
+  scrollContainer: {
+    paddingBottom: 32,
   },
   heroSection: {
     width: "100%",
@@ -313,20 +319,29 @@ const styles = StyleSheet.create({
     marginHorizontal: 40
   },
   actionButton: {
-    flex: 1,
-    paddingVertical: 14,
-    borderRadius: 30,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
+  flex: 1,
+  paddingVertical: 16,
+  borderRadius: 30,
+  justifyContent: "center",
+  alignItems: "center",
+  ...Platform.select({
+    ios: {
+      shadowColor: "#000",
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+    },
+    android: {
+      elevation: 3,
+    },
+  }),
+},
+
   buttonText: {
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
-  }
+    textAlign: "center",
+  },
 });
 

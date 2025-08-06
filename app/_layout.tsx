@@ -53,11 +53,8 @@ export default function RootLayout() {
             headerStyle: {
               backgroundColor: "#2B0607",
             },
-            // color of back arrow and title text
             headerTintColor: "#fff",
-            headerTitleStyle: {
-              fontWeight: "bold",
-            },
+            headerShadowVisible: false,
             headerLeft: () => <BackButton />,
           }}
         />
