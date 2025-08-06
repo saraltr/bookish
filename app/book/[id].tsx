@@ -1,6 +1,7 @@
 import { auth, db } from "@/utils/firebaseConfig";
 import { BookDetails, getBook } from "@/utils/openLibrary";
 import { addToReadList, addToReadingList } from "@/utils/readList";
+import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useLayoutEffect, useState } from "react";
@@ -73,27 +74,24 @@ export default function BookDetailsScreen() {
     <>
     <SafeAreaView style={{ flex: 1, backgroundColor: "#f5f5f5" }}>
       
-      <ScrollView contentContainerStyle={styles.container} showsVerticalScrollIndicator={false}>
-      <Image
-        source={imageSource}
-        style={styles.coverImage}
-        resizeMode="contain" />
-      <Text style={styles.title}>{book.title}</Text>
+      <ScrollView showsVerticalScrollIndicator={false}>
+      <View style={styles.heroSection}>
+        <Image source={imageSource} style={styles.coverImage} resizeMode="contain" />
+        <Text style={styles.title}>{book.title}</Text>
 
-      {authors.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Author{authors.length > 1 ? "s" : ""}</Text>
-            <Text style={styles.sectionText}>
-              {authors.map((author, index) => (
-                <Text key={index}>
-                  {author.name}
-                  {index < authors.length - 1 ? ", " : ""}
-                </Text>
-              ))}
-            </Text>
-          </View>
+        {authors.length > 0 && (
+          <Text style={styles.authorText}>
+            by {authors.map((a) => a.name).join(", ")}
+          </Text>
         )}
 
+        {book.number_of_pages && (
+            <View style={styles.pagesRow}>
+              <MaterialIcons name="menu-book" size={20} color="#6F1D1B" />
+              <Text style={styles.pageCount}> {book.number_of_pages} pages</Text>
+            </View>
+          )}
+      </View>
 
       {book.description && (
           <View style={styles.card}>
@@ -147,7 +145,7 @@ export default function BookDetailsScreen() {
 
       <View style={styles.buttonRow}>
         <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: "#1e88e5" }]}
+          style={[styles.actionButton, { backgroundColor: "#6F1D1B" }]}
           onPress={() => {
             if (book) {
               addToReadList(book)
@@ -160,7 +158,7 @@ export default function BookDetailsScreen() {
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={[styles.actionButton, { backgroundColor: "#43a047" }]}
+          style={[styles.actionButton, { backgroundColor: "#63ac87ff" }]}
           onPress={async () => {
             if (!book) return;
 
@@ -195,29 +193,50 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  container: {
-    padding: 20,
+  heroSection: {
+    width: "100%",
+    backgroundColor: "#d9d5cfba",
     alignItems: "center",
-    backgroundColor: "#f5f5f5",
-    paddingBottom: 100,
+    paddingBottom: 24,
+    paddingTop: 24,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   coverImage: {
-    width: 220,
-    height: 330,
+    width: 180,
+    height: 270,
     borderRadius: 12,
-    marginBottom: 24,
+    marginBottom: 16,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
+    shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
+    shadowRadius: 6,
+    elevation: 2,
   },
   title: {
-    fontSize: 28,
+    fontSize: 26,
     fontWeight: "700",
+    color: "#2B0607",
     textAlign: "center",
-    marginBottom: 16,
-    color: "#1e1e2e",
+    marginHorizontal: 12,
+  },
+  authorText: {
+    fontSize: 16,
+    color: "#294C60",
+    marginTop: 8,
+    fontStyle: "italic",
+    marginHorizontal: 10,
+    textAlign: "center"
+  },
+  pageCount: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#6F1D1B",
+  },
+  pagesRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
   },
   description: {
     fontSize: 16,
@@ -245,8 +264,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tag: {
-    backgroundColor: "#e6f0ff",
-    color: "#004080",
+    backgroundColor: "#294C60",
+    color: "#fff",
     borderRadius: 16,
     paddingHorizontal: 12,
     paddingVertical: 6,
@@ -257,7 +276,7 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   link: {
-    color: "#1e88e5",
+    color: "#294C60",
     textDecorationLine: "underline",
     fontSize: 16,
     marginVertical: 6,
@@ -267,12 +286,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     padding: 16,
     marginTop: 16,
-    width: "100%",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.05,
     shadowRadius: 6,
     elevation: 2,
+    marginHorizontal: 20,
   },
   cardTitle: {
     fontSize: 18,
@@ -285,51 +304,29 @@ const styles = StyleSheet.create({
     color: "#444",
     lineHeight: 22,
   },
-  fab: {
-    position: "absolute",
-    bottom: 20,
-    right: 20,
-    backgroundColor: "#1e88e5",
-    paddingHorizontal: 20,
+  buttonRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 24,
+    marginBottom: 40,
+    marginHorizontal: 40
+  },
+  actionButton: {
+    flex: 1,
     paddingVertical: 14,
     borderRadius: 30,
+    alignItems: "center",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
     shadowRadius: 4,
-    elevation: 5,
+    elevation: 3,
   },
-  fabText: {
-    color: "#fff",
-    fontWeight: "600",
-    fontSize: 16,
-  },
-  buttonRow: {
-  flexDirection: "row",
-  justifyContent: "space-between",
-  gap: 12,
-  marginTop: 24,
-  marginBottom: 40,
-  width: "100%",
-},
-
-actionButton: {
-  flex: 1,
-  paddingVertical: 14,
-  borderRadius: 30,
-  alignItems: "center",
-  shadowColor: "#000",
-  shadowOffset: { width: 0, height: 2 },
-  shadowOpacity: 0.1,
-  shadowRadius: 4,
-  elevation: 3,
-},
-
   buttonText: {
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
   }
-
 });
 

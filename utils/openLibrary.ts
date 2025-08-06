@@ -21,6 +21,7 @@ export interface BookDetails {
   links?: { title: string; url: string }[];
   authors?: { name: string; key: string }[];
   cover_i?: number[];
+  number_of_pages?: number;
 }
 
 
@@ -54,6 +55,19 @@ export async function getBook(id: string): Promise<BookDetails | null> {
     const workRes = await axios.get(`https://openlibrary.org/works/${cleanId}.json`);
     const workData = workRes.data;
 
+    // fetch one edition to get number of pages
+    const editionRes = await axios.get(`https://openlibrary.org/works/${cleanId}/editions.json?limit=5`);
+    const editions = editionRes.data.entries;
+
+    // try to find the first edition with a page count
+    let numberOfPages: number | undefined;
+    for (const edition of editions) {
+      if (edition.number_of_pages) {
+        numberOfPages = edition.number_of_pages;
+        break;
+      }
+    }
+
     // fetch author names
     const authors = await Promise.all(
       (workData.authors || []).map(async (entry: any) => {
@@ -77,6 +91,8 @@ export async function getBook(id: string): Promise<BookDetails | null> {
     return {
       ...workData,
       authors: authors.filter(Boolean), // remove values
+      // add page count
+      number_of_pages: numberOfPages,
     };
   } catch (error) {
     console.error("Error fetching book details:", error);
