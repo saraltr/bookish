@@ -14,6 +14,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import ReaderStats from "@/components/ReaderStats";
 
 export default function ProfileScreen() {
   const router = useRouter();
@@ -51,33 +52,9 @@ export default function ProfileScreen() {
         <Text style={styles.logoutButtonText}>Log Out</Text>
       </TouchableOpacity>
 
-      {/* Reading Stats Section */}
-      <View style={styles.statsSection}>
-        <Text style={styles.statsTitle}>Your Reading Stats</Text>
-        <View style={styles.statsRow}>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>24</Text>
-            <Text style={styles.statLabel}>Books Read</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>5</Text>
-            <Text style={styles.statLabel}>Currently Reading</Text>
-          </View>
-          <View style={styles.statItem}>
-            <Text style={styles.statNumber}>12</Text>
-            <Text style={styles.statLabel}>Books To Read</Text>
-          </View>
-        </View>
-      </View>
+      <ReaderStats></ReaderStats>
 
-      {/* Motivational Quote */}
-      {/* <View style={styles.quoteSection}>
-        <Text style={styles.quoteText}>
-          “A reader lives a thousand lives before he dies. The man who never reads lives only one.” – George R.R. Martin
-        </Text>
-      </View> */}
-
-      <View style={styles.sectionWrapper}>
+      <View style={styles.currentSection}>
         <LatestUpdated />
       </View>
 
@@ -106,7 +83,7 @@ export default function ProfileScreen() {
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     paddingVertical: 24,
     backgroundColor: "#efefefc8",
@@ -153,6 +130,9 @@ const styles = StyleSheet.create({
   sectionWrapper: {
     marginBottom: 32,
   },
+  currentSection: {
+   margin: 15,
+  },
   decorativeImage: {
     width: "100%",
     height: 150,
@@ -171,41 +151,5 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
     color: "#ddd",
-  },
-  statsSection: {
-    backgroundColor: "#fff",
-    padding: 16,
-    borderRadius: 10,
-    marginBottom: 32,
-    marginHorizontal: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 3,
-  },
-  statsTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#5d4037",
-    marginBottom: 12,
-    textAlign: "center",
-  },
-  statsRow: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-  },
-  statItem: {
-    alignItems: "center",
-  },
-  statNumber: {
-    fontSize: 22,
-    fontWeight: "800",
-    color: "#85B79D",
-  },
-  statLabel: {
-    fontSize: 12,
-    color: "#3e2c22",
-    marginTop: 4,
-  },
+  }
 });

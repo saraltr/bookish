@@ -144,7 +144,7 @@ export default function CurrentlyReading() {
                       styles.author,
                       editingBookId === item.key && styles.authorEditing
                     ]} 
-                      numberOfLines={1}>
+                      numberOfLines={3}>
                         {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
                     </Text>
                     </Link>
