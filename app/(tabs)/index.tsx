@@ -136,7 +136,6 @@ const styles = StyleSheet.create({
   },
   quoteSection: {
     marginHorizontal: 24,
-    marginBottom: 32,
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderLeftWidth: 4,
@@ -161,11 +160,11 @@ const styles = StyleSheet.create({
   elevation: 2,
 },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "700",
-    color: "#5d4037",
-    marginBottom: 16,
-    textAlign: "center",
+    marginBottom: 12,
+    paddingHorizontal: 16,
+    color: "#2B0607",
   },
   getStartedItem: {
     alignItems: "center",
