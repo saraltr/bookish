@@ -1,6 +1,6 @@
 import { auth, db } from "@/utils/firebaseConfig";
 import { BookDetails, getBook } from "@/utils/openLibrary";
-import { addToReadList, addToReadingList } from "@/utils/readList";
+import { addToBookShelf, addToReadList, addToReadingList } from "@/utils/readList";
 import { MaterialIcons } from '@expo/vector-icons';
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
@@ -144,6 +144,19 @@ export default function BookDetailsScreen() {
 
 
       <View style={styles.buttonRow}>
+        <TouchableOpacity
+          style={[styles.actionButton, { backgroundColor: "#294C60" }]}
+          onPress={() => {
+            if (book) {
+              addToBookShelf(book)
+                .then(() => alert("Book added to your Bookshelf!"))
+                .catch((err) => alert("Failed to add book: " + err.message));
+            }
+          }}
+        >
+          <Text style={styles.buttonText}>+ To Bookshelf</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: "#6F1D1B" }]}
           onPress={() => {
