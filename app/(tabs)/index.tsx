@@ -3,7 +3,8 @@ import SubjectsLists from "@/components/SubjectsLists";
 import { Image } from "expo-image";
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-
+import LatestUpdated
+ from "@/components/LatestUpdated";
 export default function HomeScreen() {
   
 
@@ -20,6 +21,8 @@ export default function HomeScreen() {
       </View>
 
       <SubjectsLists></SubjectsLists>
+
+      <LatestUpdated></LatestUpdated>
     
       <Bestsellers></Bestsellers>
 

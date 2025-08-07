@@ -5,13 +5,14 @@ import { Link } from "expo-router";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
-    FlatList,
-    Image,
-    Platform,
-    StyleSheet,
-    Text,
-    View
+  FlatList,
+  Image,
+  Platform,
+  StyleSheet,
+  Text,
+  View
 } from "react-native";
+import ReadingActivity from "./ReadingActivity";
 
 
 type ReadBook = {
@@ -19,6 +20,8 @@ type ReadBook = {
   title: string;
   authors?: { name: string; key: string }[];
   cover_i?: number[];
+  currentPage?: number;
+  number_of_pages?: number;
 };
 
 
@@ -27,6 +30,8 @@ export default function CurrentlyReading() {
 
   const [readList, setReadList] = useState<ReadBook[]>([]);
   const [readLoading, setReadLoading] = useState(true);
+  const [editingBookId, setEditingBookId] = useState<string | null>(null);
+
 
   useEffect(() => {
     const fetchReadList = async () => {
@@ -35,17 +40,17 @@ export default function CurrentlyReading() {
         const snapshot = await getDocs(
           collection(db, "users", user.uid, "currentBooks")
         );
-        const books = snapshot.docs.map((doc) => ({
+        const books = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
           key: doc.id,
-          ...doc.data(),
-        })) as (ReadBook & { addedAt?: string })[];
+          ...data,
+          updatedAt: data.updatedAt?.toDate?.() ?? new Date(0)
+        };
+      }) as (ReadBook & { updatedAt: Date })[];
 
-        // Sort by latest added (newest first)
-        books.sort((a, b) => {
-            const dateA = new Date(a.addedAt ?? "").getTime();
-            const dateB = new Date(b.addedAt ?? "").getTime();
-            return dateB - dateA;
-        });
+        // Sort by latest updated
+        books.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
         
         setReadList(books);
       } catch (err) {
@@ -92,7 +97,13 @@ export default function CurrentlyReading() {
             contentContainerStyle={styles.listContent}
             renderItem={({ item }) => (
                 
-                <View style={styles.bookContainer}>
+                <View
+                  style={[
+                    styles.bookContainer,
+                    editingBookId === item.key && styles.containerEditing,
+                  ]}
+                >
+
                     <View style={styles.removeButtonWrapper}>
                         <Ionicons
                         name="trash"
@@ -120,13 +131,34 @@ export default function CurrentlyReading() {
                             : require("@/assets/images/placeholder.png")
                         }
                     />
-                    <Text style={styles.title} numberOfLines={2}>
+                    <Text 
+                    style={[
+                      styles.title,
+                      editingBookId === item.key && styles.titleEditing,
+                    ]}
+                    numberOfLines={2}
+                    >
                         {item.title}
                     </Text>
-                    <Text style={styles.author} numberOfLines={1}>
+                    <Text style={[
+                      styles.author,
+                      editingBookId === item.key && styles.authorEditing
+                    ]} 
+                      numberOfLines={1}>
                         {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
                     </Text>
                     </Link>
+
+                    <ReadingActivity
+                      bookId={item.key}
+                      currentPage={item.currentPage}
+                      number_of_pages={item.number_of_pages}
+                      isEditing={editingBookId === item.key}
+                      onEditChange={(editing) =>
+                        setEditingBookId(editing ? item.key : null)
+                      }
+                    />
+
                 </View>
             )}
         />
@@ -210,4 +242,20 @@ const styles = StyleSheet.create({
         padding: 4,
         zIndex: 2,
     },
+    containerEditing: {
+      backgroundColor: "#6F1D1B",
+      borderRadius: 6,
+      padding: 6,
+    },
+    titleEditing: {
+      fontWeight: "bold",
+      fontSize: 14,
+      color: "#f1efefff",
+    },
+    authorEditing: {
+    fontStyle: "italic",
+    fontSize: 12,
+    color: "#cbc7c7ff",
+    marginTop: 4
+  }
 });

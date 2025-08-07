@@ -21,6 +21,7 @@ type ReadBook = {
   title: string;
   authors?: { name: string; key: string }[];
   cover_i?: number[];
+  number_of_pages?: number;
 };
 
 

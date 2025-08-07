@@ -59,12 +59,28 @@ export async function getBook(id: string): Promise<BookDetails | null> {
     const editionRes = await axios.get(`https://openlibrary.org/works/${cleanId}/editions.json?limit=5`);
     const editions = editionRes.data.entries;
 
-    // try to find the first edition with a page count
+    // try to find number of pages and a fallback cover from editions
     let numberOfPages: number | undefined;
+    let fallbackCovers: number[] | undefined;
+    let latestEdition: any = null;
+    let latestDate: string | null = null;
+
     for (const edition of editions) {
-      if (edition.number_of_pages) {
+      // try to find an edition with number_of_pages
+      if (!numberOfPages && edition.number_of_pages) {
         numberOfPages = edition.number_of_pages;
-        break;
+      }
+
+      // try to find an edition with covers
+      if (!fallbackCovers && edition.covers?.length > 0) {
+        fallbackCovers = edition.covers;
+      }
+
+      // track latest edition by publish_date or last_modified
+      const modDate = edition.last_modified?.value || edition.created?.value;
+      if (modDate && (!latestDate || modDate > latestDate)) {
+        latestDate = modDate;
+        latestEdition = edition;
       }
     }
 
@@ -87,12 +103,18 @@ export async function getBook(id: string): Promise<BookDetails | null> {
       })
     );
 
-    // return the combined book data with filtered authors
+    // use work covers if available, otherwise fallback to edition covers
+    const finalCovers: number[] | undefined =
+      workData.covers?.length > 0 ? workData.covers : fallbackCovers;
+
+    // return the combined book data
     return {
       ...workData,
       authors: authors.filter(Boolean), // remove values
       // add page count
       number_of_pages: numberOfPages,
+      covers: finalCovers,
+      latest_edition: latestEdition
     };
   } catch (error) {
     console.error("Error fetching book details:", error);

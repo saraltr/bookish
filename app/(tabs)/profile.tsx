@@ -39,6 +39,7 @@ export default function ProfileScreen() {
       <TouchableOpacity onPress={handleLogout} style={styles.button}>
         <Text>Log Out</Text>
       </TouchableOpacity>
+
       
       <ToReadList></ToReadList>
       <CurrentlyReading></CurrentlyReading>

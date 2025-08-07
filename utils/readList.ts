@@ -1,5 +1,5 @@
-import { setDoc, doc } from "firebase/firestore";
 import { auth, db } from "@/utils/firebaseConfig";
+import { doc, setDoc } from "firebase/firestore";
 import { BookDetails } from "./openLibrary";
 
 export async function addToReadList(book: BookDetails) {
@@ -15,6 +15,7 @@ export async function addToReadList(book: BookDetails) {
     title: book.title,
     authors: book.authors ?? [],
     cover_i: book.covers ?? null,
+    number_of_pages: book.number_of_pages,
     addedAt: new Date().toISOString(),
   });
 }
@@ -32,7 +33,9 @@ export async function addToReadingList(book: BookDetails) {
     title: book.title,
     authors: book.authors ?? [],
     cover_i: book.cover_i ?? book.covers ?? null,
+    number_of_pages: book.number_of_pages,
     addedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   });
 }
 
