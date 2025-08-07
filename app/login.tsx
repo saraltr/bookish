@@ -42,10 +42,22 @@ const LoginScreen: React.FC<Props> = ({ navigation }) => {
 
       {error && <Text style={styles.error}>{error}</Text>}
 
-      <TextInput placeholder="Email" value={email} onChangeText={setEmail} style={styles.input} />
+      <TextInput 
+      placeholder="Email" 
+      placeholderTextColor="#aaa"
+      value={email} 
+      onChangeText={setEmail} 
+      style={styles.input} />
 
 
-      <TextInput placeholder="Password" value={password} secureTextEntry onChangeText={setPassword} style={styles.input} />
+      <TextInput 
+      placeholder="Password" 
+      placeholderTextColor="#aaa"
+      value={password} 
+      secureTextEntry 
+      onChangeText={setPassword} 
+      style={styles.input} 
+      />
 
       <TouchableOpacity
       style={styles.button}
@@ -81,7 +93,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    backgroundColor: "#2a2a3c",
+    backgroundColor: "#543a3bcf",
     color: "#f0f4ff",
     padding: 14,
     borderRadius: 8,

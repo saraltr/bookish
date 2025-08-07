@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   input: {
-    backgroundColor: "#2a2a3c",
+    backgroundColor: "#543a3bcf",
     color: "#f0f4ff",
     padding: 14,
     borderRadius: 8,
