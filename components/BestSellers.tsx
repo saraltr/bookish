@@ -49,7 +49,7 @@ export default function Bestsellers() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.headerText}>The New York Times Best Sellers list</Text>
+      <Text style={styles.headerText}>The New York Times Best Sellers</Text>
       <FlatList
         data={books}
         keyExtractor={(item) => item.primary_isbn13}
