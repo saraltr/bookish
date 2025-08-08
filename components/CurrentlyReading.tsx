@@ -5,6 +5,7 @@ import { Link } from "expo-router";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+  DeviceEventEmitter,
   FlatList,
   Image,
   Platform,
@@ -70,6 +71,8 @@ export default function CurrentlyReading() {
             const cleanId = bookId.replace("/works/", "");
             await deleteDoc(doc(db, "users", user.uid, "currentBooks", cleanId));
             // update local state to remove the deleted book
+            // notify listeners
+            DeviceEventEmitter.emit("booksUpdated");
             setReadList((prev) => prev.filter((book) => book.key !== cleanId));
         } catch (error) {
             console.error("Failed to remove book:", error);

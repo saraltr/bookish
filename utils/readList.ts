@@ -1,6 +1,7 @@
 import { auth, db } from "@/utils/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
 import { BookDetails } from "./openLibrary";
+import { DeviceEventEmitter } from "react-native";
 
 // build the book data object to store in firestore
 function buildBookData(book: BookDetails, includeUpdatedAt = false) {
@@ -40,6 +41,9 @@ export async function addToReadList(book: BookDetails) {
 
   // store the book data in firestore
   await setDoc(bookRef, buildBookData(book));
+
+  // notify listeners
+  DeviceEventEmitter.emit("booksUpdated");
 }
 
 // add book to the currentBooks collection
@@ -55,6 +59,9 @@ export async function addToReadingList(book: BookDetails) {
 
   // store the book data
   await setDoc(bookRef, buildBookData(book, true));
+
+  // notify listeners
+  DeviceEventEmitter.emit("booksUpdated");
 }
 
 // add book to the bookshelf collection
@@ -70,4 +77,7 @@ export async function addToBookShelf(book: BookDetails) {
 
   // store the book data in firestore
   await setDoc(bookRef, buildBookData(book));
+
+  // notify listeners
+  DeviceEventEmitter.emit("booksUpdated");
 }

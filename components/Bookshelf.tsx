@@ -12,6 +12,7 @@ import {
   Text,
   useWindowDimensions,
   View,
+  DeviceEventEmitter
 } from "react-native";
 
 type ReadBook = {
@@ -76,6 +77,7 @@ export default function Bookshelf() {
       await deleteDoc(doc(db, "users", user.uid, "bookshelf", cleanId));
       setBookshelf((prev) => prev.filter((book) => book.key !== cleanId));
       if (tappedBook === cleanId) setTappedBook(null);
+      DeviceEventEmitter.emit("booksUpdated");
     } catch (error) {
       console.error("Failed to remove book:", error);
     }
@@ -154,8 +156,6 @@ export default function Bookshelf() {
     </View>
   );
 };
-
-
 
 
   // group books into rows

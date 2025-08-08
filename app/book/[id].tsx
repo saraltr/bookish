@@ -7,6 +7,7 @@ import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ActivityIndicator,
+  DeviceEventEmitter,
   Image,
   Linking,
   Platform,
@@ -14,23 +15,27 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 
-
-
 export default function BookDetailsScreen() {
+  // get the book id from route parameters
   const { id } = useLocalSearchParams<{ id: string }>();
+  // navigation object for setting screen options
   const navigation = useNavigation();
+  // state to store book details data
   const [book, setBook] = useState<BookDetails | null>(null);
+  // loading state to show spinner while fetching data
   const [loading, setLoading] = useState(true);
 
+  // update screen title when book changes
   useLayoutEffect(() => {
     navigation.setOptions({
       title: book?.title || "Book Details",
     });
   }, [navigation, book]);
 
+  // fetch book details
   useEffect(() => {
     async function fetchData() {
       if (id) {
@@ -42,6 +47,7 @@ export default function BookDetailsScreen() {
     fetchData();
   }, [id]);
 
+  // show loading spinner while data is loading
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -50,6 +56,7 @@ export default function BookDetailsScreen() {
     );
   }
 
+  // show message if no book found
   if (!book) {
     return (
       <View style={styles.loaderContainer}>
@@ -58,12 +65,14 @@ export default function BookDetailsScreen() {
     );
   }
 
+  // get first cover id if available for the book image
   const coverId = book.covers?.[0];
+  // set image source from open library or placeholder
   const imageSource = coverId
   ? { uri: `https://covers.openlibrary.org/b/id/${coverId}-L.jpg` }
   : require("@/assets/images/placeholder.png");
 
-
+  // extract arrays or default to empty arrays
   const subjects = book.subjects ?? [];
   const subjectPlaces = book.subject_places ?? [];
   const subjectTimes = book.subject_times ?? [];
@@ -75,6 +84,8 @@ export default function BookDetailsScreen() {
       
       <ScrollView showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.scrollContainer}>
+
+      {/* hero section with book cover, title, and authors */}
       <View style={styles.heroSection}>
         <Image source={imageSource} style={styles.coverImage} resizeMode="contain" />
         <Text style={styles.title}>{book.title}</Text>
@@ -85,6 +96,7 @@ export default function BookDetailsScreen() {
           </Text>
         )}
 
+        {/* show page count if available */}
         {book.number_of_pages && (
             <View style={styles.pagesRow}>
               <MaterialIcons name="menu-book" size={20} color="#6F1D1B" />
@@ -92,7 +104,8 @@ export default function BookDetailsScreen() {
             </View>
           )}
       </View>
-
+      
+      {/* description card */}
       {book.description && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Description</Text>
@@ -104,6 +117,7 @@ export default function BookDetailsScreen() {
           </View>
         )}
 
+      {/* places card */}
       {subjectPlaces.length > 0 && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Places</Text>
@@ -111,6 +125,7 @@ export default function BookDetailsScreen() {
           </View>
         )}
 
+      {/* time periods card */}
       {subjectTimes.length > 0 && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Time Periods</Text>
@@ -118,6 +133,7 @@ export default function BookDetailsScreen() {
           </View>
         )}
 
+      {/* subjects tags card */}
       {subjects.length > 0 && (
           <View style={styles.card}>
             <Text style={styles.cardTitle}>Subjects</Text>
@@ -131,6 +147,7 @@ export default function BookDetailsScreen() {
           </View>
         )}
 
+      {/* additional links card */}
       {links.length > 0 && (
         <View style={styles.card}>
             <Text style={styles.cardTitle}>More Links</Text>
@@ -142,8 +159,10 @@ export default function BookDetailsScreen() {
           </View>
       )}
 
-
+      {/* buttons for adding book to different lists */}
       <View style={styles.buttonRow}>
+
+        {/* add to bookshelf */}
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: "#294C60" }]}
           onPress={() => {
@@ -156,7 +175,8 @@ export default function BookDetailsScreen() {
         >
           <Text style={styles.buttonText}>+ To Bookshelf</Text>
         </TouchableOpacity>
-
+        
+        {/* add to read list */}
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: "#6F1D1B" }]}
           onPress={() => {
@@ -169,7 +189,8 @@ export default function BookDetailsScreen() {
         >
           <Text style={styles.buttonText}>+ To Read List</Text>
         </TouchableOpacity>
-
+        
+        {/* add to currently reading list */}
         <TouchableOpacity
           style={[styles.actionButton, { backgroundColor: "#63ac87ff" }]}
           onPress={async () => {
@@ -180,7 +201,8 @@ export default function BookDetailsScreen() {
               // remove from to-read list if present
               const cleanKey = book.key.replace("/works/", "");
               await deleteDoc(doc(db, "users", auth.currentUser?.uid!, "readBooks", cleanKey));
-
+              // notify listeners
+                DeviceEventEmitter.emit("booksUpdated");
               alert("Book moved to Currently Reading list!");
             } catch (err: any) {
               alert("Failed to move book: " + err.message);

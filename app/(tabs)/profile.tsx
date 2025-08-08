@@ -1,12 +1,14 @@
 import Bookshelf from "@/components/Bookshelf";
 import CurrentlyReading from "@/components/CurrentlyReading";
 import LatestUpdated from "@/components/LatestUpdated";
+import ReaderStats from "@/components/ReaderStats";
 import ToReadList from "@/components/ToReadList";
 import { useAuth } from "@/contexts/authContext";
 import { auth } from "@/utils/firebaseConfig";
 import { Image } from "expo-image";
 import { useRouter } from "expo-router";
 import { signOut } from "firebase/auth";
+import { useEffect } from "react";
 import {
   ScrollView,
   StyleSheet,
@@ -14,18 +16,23 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import ReaderStats from "@/components/ReaderStats";
 
 export default function ProfileScreen() {
   const router = useRouter();
   const { user, loading } = useAuth();
 
-  if (loading) return <Text style={styles.loadingText}>Loading...</Text>;
+  useEffect(() => {
+    if (!loading && !user) {
+      router.replace("/login");
+    }
+  }, [loading, user, router]);
 
-  if (!user) {
-    router.replace("/login");
-    return null;
-  }
+    if (loading) return <Text style={styles.loadingText}>Loading...</Text>;
+
+    if (!user) {
+      // return null so nothing renders while navigation happens
+      return null;
+    }
 
   const handleLogout = async () => {
     try {
@@ -38,6 +45,7 @@ export default function ProfileScreen() {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {/* User info from auth */}
       <View style={styles.userInfo}>
         <Image
           source={require("@/assets/images/userIcon.svg")}
@@ -48,16 +56,19 @@ export default function ProfileScreen() {
         <Text style={styles.emailText}>{user?.email}</Text>
       </View>
 
+    {/* Logout button */}
       <TouchableOpacity onPress={handleLogout} style={styles.logoutButton}>
         <Text style={styles.logoutButtonText}>Log Out</Text>
       </TouchableOpacity>
 
+      {/* Reader stats */}
       <ReaderStats></ReaderStats>
 
       <View style={styles.currentSection}>
         <LatestUpdated />
       </View>
 
+      {/* bookshelf */}
       <View style={styles.sectionWrapper}>
         <Bookshelf />
       </View>

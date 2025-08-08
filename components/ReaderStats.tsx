@@ -1,7 +1,7 @@
 import { getBookShelfCount, getCurrentlyReadingCount, getToReadCount } from "@/utils/stats";
 import { useEffect, useState } from "react";
 
-import { StyleSheet, Text, View } from "react-native";
+import { DeviceEventEmitter, StyleSheet, Text, View } from "react-native";
 
 export default function ReaderStats(){
 
@@ -9,21 +9,32 @@ export default function ReaderStats(){
     const [currentlyReading, setCurrentlyReading] = useState(0);
     const [read, setRead] = useState(0);
 
-    useEffect(() => {
+    // helper function to fetch all counts
     const fetchCounts = async () => {
-        const readingCount = await getCurrentlyReadingCount();
-        const toreadCount = await getToReadCount();
-        const shelfCount = await getBookShelfCount();
+    const readingCount = await getCurrentlyReadingCount();
+    const toreadCount = await getToReadCount();
+    const shelfCount = await getBookShelfCount();
 
-        // update state
-        setBooksToRead(toreadCount);
-        setCurrentlyReading(readingCount);
-        setRead(shelfCount);
+    // update state with the fetched counts
+    setBooksToRead(toreadCount);
+    setCurrentlyReading(readingCount);
+    setRead(shelfCount);
+  };
 
-    };
-
+  useEffect(() => {
+    // run once on component mount
     fetchCounts();
-    }, []);
+
+    // listen for the booksUpdated event to refresh counts
+    const subscription = DeviceEventEmitter.addListener("booksUpdated", () => {
+      fetchCounts();
+    });
+
+    // remove the listener when the component unmounts
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
     return(
       <View style={styles.statsSection}>
