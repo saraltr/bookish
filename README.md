@@ -1,6 +1,6 @@
 # Overview
 
-Bookish is a mobile app built with React Native and Expo.  designed to help users manage, track and enjoy their reading journey. I developed this app to deepen my understanding of mobile development and gain experience in building cross-platform apps.
+Bookish is a mobile app built with React Native and Expo designed to help users manage, track and enjoy their reading journey. I developed this app to deepen my understanding of mobile development and gain experience in building cross-platform apps.
 
 The app allows users to register and log in using Firebase Authentication. Once signed in, users can create and customize their own profile, where they can organize books into three personalized lists: To Read, Currently Reading, and Bookshelf. Users can track their reading progress by updating their different lists. 
 
@@ -8,7 +8,7 @@ Books are displayed dynamically from the Open Library API, giving users access t
 
 All user data is stored using in Firebase’s real-time database, in order to ensure synchronization across devices.
 
-[Software Demo Video](http://youtube.link.goes.here)
+[Software Demo Video](https://youtu.be/9HEpUJxIl4w)
 
 # Development Environment
 
@@ -29,7 +29,6 @@ Or
    ```
 # Useful Websites
 
-{Make a list of websites that you found helpful in this project}
 * [React Native Docs](https://reactnative.dev/docs/environment-setup)
 * [Expo Documentation](https://docs.expo.dev/)
 * [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/)
@@ -41,7 +40,7 @@ Or
 
 # Future Work
 
-{Make a list of things that you need to fix, improve, and add in the future.}
-* Item 1
-* Item 2
-* Item 3
+* Book Clubs
+* Authors List & Detailed Screens
+* Ability to rate books and leave reviews
+* Integrate a feature using a phone component
