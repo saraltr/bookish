@@ -52,7 +52,8 @@ export default function SubjectsLists() {
 
   // book item card
   const renderBookItem = ({ item }: { item: Book }) => (
-    <TouchableOpacity style={styles.bookCard}>
+    <View style={styles.bookCard}>
+      <TouchableOpacity>
       <Link
         href={{
           pathname: "/book/[id]",
@@ -67,16 +68,17 @@ export default function SubjectsLists() {
           }
           style={styles.coverImage}
         />
+        </Link>
+        </TouchableOpacity>
         <Text numberOfLines={2} style={styles.bookTitle}>
           {item.title}
         </Text>
         {item.author_name && (
-          <Text numberOfLines={1} style={styles.bookAuthor}>
+          <Text numberOfLines={2} style={styles.bookAuthor}>
             {item.author_name[0]}
           </Text>
         )}
-      </Link>
-    </TouchableOpacity>
+    </View>
   );
 
   // handle scrolling when arrow buttons are clicked

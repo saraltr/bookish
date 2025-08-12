@@ -12,7 +12,8 @@ import {
     Platform,
     StyleSheet,
     Text,
-    View
+    View,
+    TouchableOpacity
 } from "react-native";
 
 
@@ -127,14 +128,14 @@ export default function ToReadList() {
                         onPress={() => handleMoveToReading(item)}
                       />
                     </View>
-
-                    <Link 
-                  href={
-                    {
-                      pathname:"/book/[id]",
-                      params: {id: item.key}
+                  <TouchableOpacity>
+                  <Link 
+                    href={
+                      {
+                        pathname:"/book/[id]",
+                        params: {id: item.key}
+                      }
                     }
-                  }
                   
                   >
                     <Image
@@ -147,13 +148,14 @@ export default function ToReadList() {
                             : require("@/assets/images/placeholder.png")
                         }
                     />
-                    <Text style={styles.title} numberOfLines={2}>
+                  </Link>
+                  </TouchableOpacity>
+                    <Text style={styles.title} numberOfLines={3}>
                         {item.title}
                     </Text>
-                    <Text style={styles.author} numberOfLines={1}>
+                    <Text style={styles.author} numberOfLines={3}>
                         {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
                     </Text>
-                    </Link>
                 </View>
             )}
         />

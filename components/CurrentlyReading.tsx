@@ -11,7 +11,8 @@ import {
   Platform,
   StyleSheet,
   Text,
-  View
+  View,
+  TouchableOpacity
 } from "react-native";
 import ReadingActivity from "./ReadingActivity";
 
@@ -115,42 +116,43 @@ export default function CurrentlyReading() {
                         onPress={() => handleRemoveBook(item.key)}
                         />
                     </View>
-                    <Link 
-                  href={
-                    {
-                      pathname:"/book/[id]",
-                      params: {id: item.key}
-                    }
-                  }
-                  
-                  >
-                    <Image
-                        style={styles.image}
-                        source={
-                        item.cover_i && item.cover_i.length > 0
-                            ? {
-                                uri: `https://covers.openlibrary.org/b/id/${item.cover_i[0]}-M.jpg`,
+                    <TouchableOpacity>
+                      <Link 
+                        href={
+                          {
+                            pathname:"/book/[id]",
+                            params: {id: item.key}
+                          }
+                          }
+                      >
+                        <Image
+                            style={styles.image}
+                            source={
+                            item.cover_i && item.cover_i.length > 0
+                                ? {
+                                    uri: `https://covers.openlibrary.org/b/id/${item.cover_i[0]}-M.jpg`,
+                                }
+                                : require("@/assets/images/placeholder.png")
                             }
-                            : require("@/assets/images/placeholder.png")
-                        }
-                    />
-                    <Text 
-                    style={[
-                      styles.title,
-                      editingBookId === item.key && styles.titleEditing,
-                    ]}
-                    numberOfLines={2}
-                    >
-                        {item.title}
-                    </Text>
-                    <Text style={[
-                      styles.author,
-                      editingBookId === item.key && styles.authorEditing
-                    ]} 
-                      numberOfLines={3}>
-                        {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
-                    </Text>
-                    </Link>
+                        />
+                        </Link>
+                      </TouchableOpacity>
+                        <Text 
+                        style={[
+                          styles.title,
+                          editingBookId === item.key && styles.titleEditing,
+                        ]}
+                        numberOfLines={3}
+                        >
+                            {item.title}
+                        </Text>
+                        <Text style={[
+                          styles.author,
+                          editingBookId === item.key && styles.authorEditing
+                        ]} 
+                          numberOfLines={3}>
+                            {item.authors?.map((a) => a.name).join(", ") ?? "Unknown author"}
+                        </Text>
 
                     <ReadingActivity
                       bookId={item.key}
@@ -175,7 +177,6 @@ const styles = StyleSheet.create({
   listContent: {
     paddingLeft: 16,
     paddingRight: 8,
-    paddingBottom: 16,
   },
   container: {
     marginVertical: 20,

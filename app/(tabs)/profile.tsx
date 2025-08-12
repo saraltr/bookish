@@ -83,7 +83,7 @@ export default function ProfileScreen() {
       </Text>
 
 
-      <View style={styles.sectionWrapper}>
+      <View>
         <CurrentlyReading />
       </View>
 
