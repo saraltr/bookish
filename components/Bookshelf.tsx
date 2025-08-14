@@ -1,18 +1,20 @@
 import { useAuth } from "@/contexts/authContext";
 import { db } from "@/utils/firebaseConfig";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import { Link } from "expo-router";
 import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
 import { useEffect, useState } from "react";
 import {
+  DeviceEventEmitter,
   Image,
   Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   useWindowDimensions,
-  View,
-  DeviceEventEmitter
+  View
 } from "react-native";
 
 type ReadBook = {
@@ -133,13 +135,22 @@ export default function Bookshelf() {
                 setTappedBook(null);
               }
             }}
-            pointerEvents={Platform.OS === "web" ? "none" : "auto"}
+            pointerEvents="auto"
           >
             <View style={styles.overlay}>
-              <Text style={styles.overlayTitle} numberOfLines={2}>
-                {item.title}
-              </Text>
-              <Text style={styles.overlayAuthor} numberOfLines={1}>
+              <TouchableOpacity>
+              <Link
+                href={{
+                  pathname:"/book/[id]",
+                  params: {id: item.key}
+                }}
+              >
+                <Text style={styles.overlayTitle} numberOfLines={3}>
+                  {item.title}
+                </Text>
+              </Link>
+              </TouchableOpacity>
+              <Text style={styles.overlayAuthor} numberOfLines={3}>
                 {item.authors?.map((a) => a.name).join(", ") ?? "Unknown"}
               </Text>
             </View>

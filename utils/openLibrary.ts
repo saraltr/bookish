@@ -7,6 +7,7 @@ export interface Book {
   author_name?: string[];
   cover_i?: number;
   first_publish_year?: number;
+  author_key?: string[];
 }
 
 // book structure for detailed page
@@ -22,6 +23,13 @@ export interface BookDetails {
   authors?: { name: string; key: string }[];
   cover_i?: number[];
   number_of_pages?: number;
+  author_key?: string[];
+}
+
+export interface AuthorDetails {
+  name: string;
+  bio?: string | { value: string };
+  photos?: number[];
 }
 
 
@@ -30,7 +38,7 @@ export async function searchBooks(query: string): Promise<Book[]> {
     // encode the query to make it safe for use in a url
     const encodedQuery = encodeURIComponent(query);
     // send request to open library search api with filters
-    const response = await axios.get(`https://openlibrary.org/search.json?q=${encodedQuery}&limit=20&language=eng`);
+    const response = await axios.get(`https://openlibrary.org/search.json?q=${encodedQuery}&language=eng`);
 
     // map the response data to match the book interface
     return response.data.docs.map((book: any) => ({
@@ -39,6 +47,7 @@ export async function searchBooks(query: string): Promise<Book[]> {
       author_name: book.author_name,
       cover_i: book.cover_i,
       first_publish_year: book.first_publish_year,
+      author_key: book.author_key
     }));
   } catch (error) {
     console.error("Error fetching books from Open Library:", error);
@@ -131,9 +140,35 @@ export async function getBooksBySubject(subject: string): Promise<Book[]> {
       author_name: book.authors?.map((a: any) => a.name),
       cover_i: book.cover_id,
       first_publish_year: book.first_publish_year,
+      author_key: book.authors?.map((a: any) => a.key)
     }));
   } catch (error) {
     console.error("Error fetching subject books:", error);
+    return [];
+  }
+}
+
+export async function getAuthor(authorKey: string): Promise<AuthorDetails | null> {
+  try {
+    // Remove /authors/ prefix if included
+    const cleanKey = authorKey.replace("/authors/", "");
+
+    // Fetch works by this author
+    const res = await axios.get(`https://openlibrary.org/authors/${cleanKey}.json`);
+
+    return res.data as AuthorDetails;
+  } catch (error) {
+    console.error("Error fetching books by author:", error);
+    return null;
+  }
+}
+
+// get books for the author
+export async function getBooksByAuthor(authorName: string, page = 1): Promise<Book[]> {
+  try {
+    return await searchBooks(`author:"${authorName}"`);
+  } catch (error) {
+    console.error("Error fetching books by author:", error);
     return [];
   }
 }

@@ -1,4 +1,5 @@
 import { Book, getBooksBySubject } from "@/utils/openLibrary";
+import { Ionicons } from "@expo/vector-icons";
 import { Link } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,7 +12,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 
 // subject list from open library
 const SUBJECTS = [
@@ -73,10 +73,17 @@ export default function SubjectsLists() {
         <Text numberOfLines={2} style={styles.bookTitle}>
           {item.title}
         </Text>
-        {item.author_name && (
+        {item.author_name && item.author_key && (
+          <Link
+            href={{
+              pathname: "/author/[id]",
+              params: { id: item.author_key[0] },
+            }}
+          >
           <Text numberOfLines={2} style={styles.bookAuthor}>
             {item.author_name[0]}
           </Text>
+          </Link>
         )}
     </View>
   );

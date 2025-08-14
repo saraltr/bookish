@@ -58,6 +58,17 @@ export default function RootLayout() {
             headerLeft: () => <BackButton />,
           }}
         />
+        <Stack.Screen
+          name="author/[id]"
+          options={{
+            headerStyle: {
+              backgroundColor: "#2B0607",
+            },
+            headerTintColor: "#fff",
+            headerShadowVisible: false,
+            headerLeft: () => <BackButton />,
+          }}
+        />
       </Stack>
     </AuthProvider>
   );

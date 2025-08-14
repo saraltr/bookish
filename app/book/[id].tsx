@@ -2,7 +2,7 @@ import { auth, db } from "@/utils/firebaseConfig";
 import { BookDetails, getBook } from "@/utils/openLibrary";
 import { addToBookShelf, addToReadList, addToReadingList } from "@/utils/readList";
 import { MaterialIcons } from '@expo/vector-icons';
-import { useLocalSearchParams, useNavigation } from "expo-router";
+import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { deleteDoc, doc } from "firebase/firestore";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
@@ -92,7 +92,21 @@ export default function BookDetailsScreen() {
 
         {authors.length > 0 && (
           <Text style={styles.authorText}>
-            by {authors.map((a) => a.name).join(", ")}
+            by{" "}
+            {authors.map((a, index) => (
+              <Link
+                key={a.key}
+                href={{
+                  pathname: "/author/[id]",
+                  params: { id: a.key.replace("/authors/", "") }, // e.g. OL23919A
+                }}
+              >
+                <Text style={styles.authorLink}>
+                  {a.name}
+                  {index < authors.length - 1 ? ", " : ""}
+                </Text>
+              </Link>
+            ))}
           </Text>
         )}
 
@@ -369,13 +383,16 @@ const styles = StyleSheet.create({
       elevation: 3,
     },
   }),
-},
-
+  },
   buttonText: {
     color: "#fff",
     fontWeight: "600",
     fontSize: 16,
     textAlign: "center",
   },
+  authorLink: {
+    color: "#294C60",
+    textDecorationLine: "underline",
+  }
 });
 
