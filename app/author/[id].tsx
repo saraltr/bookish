@@ -3,12 +3,13 @@ import { Link, useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useLayoutEffect, useState } from "react";
 import {
   ActivityIndicator,
+  FlatList,
   Image,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  useWindowDimensions,
+  View,
 } from "react-native";
 
 interface AuthorDetails {
@@ -20,10 +21,23 @@ interface AuthorDetails {
 export default function AuthorDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const navigation = useNavigation();
+  const { width } = useWindowDimensions();
 
   const [author, setAuthor] = useState<AuthorDetails | null>(null);
   const [books, setBooks] = useState<Book[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Number of books displayed on each row depending on screen width
+  const numColumns =
+    width >= 1200
+      ? 6
+      : width >= 900
+      ? 5
+      : width >= 600
+      ? 4
+      : width >= 400
+      ? 3
+      : 2;
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -34,12 +48,13 @@ export default function AuthorDetailsScreen() {
   useEffect(() => {
     async function fetchData() {
       if (!id) return;
+
       try {
         // Get author details
         const authorData = await getAuthor(id);
         setAuthor(authorData);
 
-        // If author found, fetch books by name
+        // Get books by author
         if (authorData?.name) {
           const booksData = await getBooksByAuthor(authorData.name);
           setBooks(booksData);
@@ -50,6 +65,7 @@ export default function AuthorDetailsScreen() {
         setLoading(false);
       }
     }
+
     fetchData();
   }, [id]);
 
@@ -70,90 +86,134 @@ export default function AuthorDetailsScreen() {
   }
 
   const photoId = author.photos?.[0];
+
   const imageSource = photoId
-    ? { uri: `https://covers.openlibrary.org/b/id/${photoId}-L.jpg` }
+    ? {
+        uri: `https://covers.openlibrary.org/b/id/${photoId}-L.jpg`,
+      }
     : require("@/assets/images/placeholder2.png");
 
   return (
-    <ScrollView contentContainerStyle={styles.scrollContainer}>
-      {/* Author info */}
-      <View style={styles.heroSection}>
-        <Image source={imageSource} style={styles.coverImage} resizeMode="contain" />
-        <Text style={styles.title}>{author.name}</Text>
-        {author.bio && (
-          <Text style={styles.bioText}>
-            {typeof author.bio === "string" ? author.bio : author.bio.value}
-          </Text>
-        )}
-      </View>
+    <FlatList
+      // Required because numColumns changes when resizing the window
+      key={`columns-${numColumns}`}
+      data={books}
+      keyExtractor={(book) => book.key}
+      numColumns={numColumns}
+      contentContainerStyle={styles.scrollContainer}
+      columnWrapperStyle={styles.bookRow}
+      ListHeaderComponent={
+        <>
+          {/* author section */}
 
-      {/* Books list */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Books by {author.name}</Text>
-        {books.map((book) => (
-          <Link
-            key={book.key}
-            href={{
-              pathname: "/book/[id]",
-              params: { id: book.key }
-            }}
-            asChild // let TouchableOpacity be the clickable component
-          >
-            <TouchableOpacity style={styles.bookRow}>
-              <Image
-                source={
-                  book.cover_i
-                    ? { uri: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg` }
-                    : require("@/assets/images/placeholder.png")
-                }
-                style={styles.bookCover}
-              />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.bookTitle}>{book.title}</Text>
-                {book.first_publish_year && (
-                  <Text style={styles.bookYear}>
-                    First published: {book.first_publish_year}
-                  </Text>
-                )}
-              </View>
-            </TouchableOpacity>
-          </Link>
-        ))}
-      </View>
+          <View style={styles.heroSection}>
+            <Image
+              source={imageSource}
+              style={styles.coverImage}
+              resizeMode="contain"
+            />
 
-    </ScrollView>
+            <Text style={styles.title}>{author.name}</Text>
+
+            {author.bio && (
+              <Text style={styles.bioText}>
+                {typeof author.bio === "string"
+                  ? author.bio
+                  : author.bio.value}
+              </Text>
+            )}
+          </View>
+
+          <View style={styles.booksCardTop}>
+            <Text style={styles.cardTitle}>
+              Books by {author.name}
+            </Text>
+          </View>
+        </>
+      }
+      renderItem={({ item: book }) => (
+        <Link
+          href={{
+            pathname: "/book/[id]",
+            params: { id: book.key },
+          }}
+          asChild
+        >
+          <TouchableOpacity style={styles.bookItem}>
+            <Image
+              source={
+                book.cover_i
+                  ? {
+                      uri: `https://covers.openlibrary.org/b/id/${book.cover_i}-M.jpg`,
+                    }
+                  : require("@/assets/images/placeholder.png")
+              }
+              style={styles.bookCover}
+              resizeMode="cover"
+            />
+
+            <Text style={styles.bookTitle} numberOfLines={2}>
+              {book.title}
+            </Text>
+
+            {book.first_publish_year && (
+              <Text style={styles.bookYear}>
+                {book.first_publish_year}
+              </Text>
+            )}
+          </TouchableOpacity>
+        </Link>
+      )}
+      ListFooterComponent={
+        books.length > 0 ? <View style={styles.booksCardBottom} /> : null
+      }
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <Text>No books found for this author.</Text>
+        </View>
+      }
+    />
   );
 }
 
-
 const styles = StyleSheet.create({
+  // general
+
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
   },
+
   scrollContainer: {
     paddingBottom: 32,
   },
+
+  // author section
+
   heroSection: {
     alignItems: "center",
     backgroundColor: "#d9d5cfba",
     paddingVertical: 24,
+    paddingHorizontal: 20,
     borderBottomLeftRadius: 24,
     borderBottomRightRadius: 24,
   },
+
   coverImage: {
     width: 180,
     height: 270,
     borderRadius: 12,
     marginBottom: 16,
   },
+
   title: {
     fontSize: 26,
     fontWeight: "700",
     textAlign: "center",
     marginHorizontal: 12,
   },
+
   bioText: {
     fontSize: 16,
     color: "#444",
@@ -161,37 +221,92 @@ const styles = StyleSheet.create({
     marginTop: 12,
     textAlign: "center",
     paddingHorizontal: 16,
+    maxWidth: 800,
   },
-  card: {
+
+  // books section
+
+  booksCardTop: {
     backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
+
     marginTop: 16,
     marginHorizontal: 20,
+
+    paddingTop: 16,
+    paddingHorizontal: 16,
+
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+
     elevation: 2,
   },
+
   cardTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
-    marginBottom: 12,
+    marginBottom: 16,
   },
+
   bookRow: {
-    flexDirection: "row",
-    marginBottom: 12,
+    backgroundColor: "#fff",
+    marginHorizontal: 20,
+    paddingHorizontal: 20,
+    justifyContent: "space-around",
+  },
+
+  bookItem: {
+    width: 120,
+    marginBottom: 24,
+    marginHorizontal: 6,
     alignItems: "center",
   },
+
   bookCover: {
-    width: 60,
-    height: 90,
-    borderRadius: 6,
-    marginRight: 12,
+    width: 120,
+    height: 180,
+    borderRadius: 8,
+    marginBottom: 8,
   },
+
   bookTitle: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 15,
+    fontWeight: "600",
+    lineHeight: 20,
+    textAlign: "center",
   },
+
   bookYear: {
-    fontSize: 14,
+    fontSize: 13,
     color: "#666",
+    marginTop: 4,
+    textAlign: "center",
+  },
+
+  // bottom of the white card
+  booksCardBottom: {
+    backgroundColor: "#fff",
+
+    height: 16,
+
+    marginHorizontal: 20,
+
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+
+    elevation: 2,
+  },
+
+  // empty
+
+  emptyContainer: {
+    backgroundColor: "#fff",
+
+    marginHorizontal: 20,
+    padding: 30,
+
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+
+    alignItems: "center",
   },
 });
