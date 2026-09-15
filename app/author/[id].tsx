@@ -39,6 +39,29 @@ export default function AuthorDetailsScreen() {
       // ? 3
       : 3;
 
+  const bookWidth = 
+    width < 400
+    ? 70
+    : width < 600
+    ? 105
+    : 120;
+  
+  const bookHeight = bookWidth * 1.5;
+
+  const bookFontSize =
+  width < 400
+    ? 11
+    : width < 600
+    ? 14
+    : 15;
+
+  const bookLineHeight =
+    width < 400
+      ? 17
+      : width < 600
+      ? 18
+      : 20;
+
   useLayoutEffect(() => {
     navigation.setOptions({
       title: author?.name || "Author Details",
@@ -139,7 +162,12 @@ export default function AuthorDetailsScreen() {
           }}
           asChild
         >
-          <TouchableOpacity style={styles.bookItem}>
+          <TouchableOpacity
+            style={{
+              ...styles.bookItem,
+              width: bookWidth,
+            }}
+          >
             <Image
               source={
                 book.cover_i
@@ -148,19 +176,31 @@ export default function AuthorDetailsScreen() {
                     }
                   : require("@/assets/images/placeholder.png")
               }
-              style={styles.bookCover}
+              style={[styles.bookCover,
+                {
+                  width: bookWidth,
+                  height: bookHeight
+                }
+              ]}
               resizeMode="cover"
             />
 
-            <Text style={styles.bookTitle} numberOfLines={2}>
+            <Text
+              style={{
+                ...styles.bookTitle,
+                fontSize: bookFontSize,
+                lineHeight: bookLineHeight,
+              }}
+              numberOfLines={3}
+            >
               {book.title}
             </Text>
 
-            {book.first_publish_year && (
-              <Text style={styles.bookYear}>
-                {book.first_publish_year}
-              </Text>
-            )}
+            <Text style={styles.bookYear}>
+              {book.first_publish_year && book.first_publish_year !== 0
+                ? book.first_publish_year
+                : "—"}
+            </Text>
           </TouchableOpacity>
         </Link>
       )}
@@ -230,7 +270,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
 
     marginTop: 16,
-    marginHorizontal: 20,
+    marginHorizontal: 10,
 
     paddingTop: 16,
     paddingHorizontal: 16,
@@ -249,8 +289,8 @@ const styles = StyleSheet.create({
 
   bookRow: {
     backgroundColor: "#fff",
-    marginHorizontal: 20,
-    paddingHorizontal: 20,
+    marginHorizontal: 10,
+    paddingHorizontal: 10,
     justifyContent: "space-around",
   },
 
@@ -271,7 +311,7 @@ const styles = StyleSheet.create({
   bookTitle: {
     fontSize: 15,
     fontWeight: "600",
-    lineHeight: 20,
+    lineHeight: 15,
     textAlign: "center",
   },
 
@@ -280,15 +320,15 @@ const styles = StyleSheet.create({
     color: "#666",
     marginTop: 4,
     textAlign: "center",
+    fontStyle: "italic"
   },
 
   // bottom of the white card
   booksCardBottom: {
     backgroundColor: "#fff",
-
     height: 16,
 
-    marginHorizontal: 20,
+    marginHorizontal: 10,
 
     borderBottomLeftRadius: 12,
     borderBottomRightRadius: 12,
