@@ -35,9 +35,9 @@ export default function AuthorDetailsScreen() {
       ? 5
       : width >= 600
       ? 4
-      : width >= 400
-      ? 3
-      : 2;
+      // : width >= 400
+      // ? 3
+      : 3;
 
   useLayoutEffect(() => {
     navigation.setOptions({
