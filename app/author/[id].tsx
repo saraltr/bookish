@@ -40,11 +40,21 @@ export default function AuthorDetailsScreen() {
       : 3;
 
   const bookWidth = 
-    width < 400
-    ? 70
+    width < 300
+    ? 75
+    : width < 305
+    ? 78
+    : width < 315
+    ? 80
+    : width < 350
+    ? 82
+    : width < 400
+    ? 85
+    : width < 500
+    ? 110
     : width < 600
-    ? 105
-    : 120;
+    ? 120
+    : 150;
   
   const bookHeight = bookWidth * 1.5;
 
